@@ -1,6 +1,5 @@
 # lib-jdbc-mysql
 
-
 @Configuration
 public class DBConfiguration {
 	@Bean(name = "dataSource")
@@ -8,7 +7,6 @@ public class DBConfiguration {
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().type(com.mchange.v2.c3p0.ComboPooledDataSource.class).build();
 	}
-
 }
 
 sqlite.c3p0.jdbcUrl=jdbc:sqlite:db/test.db
@@ -16,13 +14,22 @@ sqlite.c3p0.user=
 sqlite.c3p0.password=
 sqlite.source.c3p0.driverClass=org.sqlite.JDBC
 
+@Service
+public class user_service extends mysqlBase_service<user>{
+	
+	
+	public String insUser(user bean) {
+		String id = getYwlsh(20);
+		bean.setId(id);
+		bean.setPass("111111");
+		if(super.insert(bean)==1) return id;
+		else return null;
+	}
+}
 
-@Component
 public class example implements CommandLineRunner {
 	@Autowired
 	user_service user_svr;
-
-	protected Logger logger = LoggerFactory.getLogger(example.class);
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -42,8 +49,8 @@ public class example implements CommandLineRunner {
 			logger.info("保存结果：" + user_svr.insUser(user1));
 		}
 	}
-  
-  private void update1() {
+  	
+	private void update1() {
 		user user1 = user_svr.getById("202110031321073452el");
 		logger.info("读取数据,name is：" + user1.getName());
 		user1.setName("修改后");
@@ -86,5 +93,4 @@ public class example implements CommandLineRunner {
 	private void count_num() {
 		logger.info("记录数量:" + user_svr.count_num(new user()));		
 	}
-
-}
+	}
